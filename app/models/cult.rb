@@ -42,5 +42,39 @@ class Cult
         BloodOath.all.select {|bloodoaths| bloodoaths.cult == self}.length
     end
 
-    
+    def average_age
+        sum = 0
+        counter = 0.0
+        BloodOath.all.map do |bloodoaths| 
+            if bloodoaths.cult == self
+                sum += bloodoaths.follower.age
+                counter += 1
+            end
+        end
+        sum.to_f / counter
+    end
+
+    def my_followers_mottos
+        BloodOath.all.select {|bloodoaths| bloodoaths.cult == self}
+        .map{|followers| puts followers.follower.life_motto}
+    end
+
+    def self.least_popular
+        min = Cult.all.first.cult_population
+        least_populated_cult = []
+        Cult.all.map do |cults|
+            if cults.cult_population == min
+                least_populated_cult.push(cults)
+            elsif cults.cult_population < min
+                min = cults.cult_population
+                least_populated_cult = [cults]
+            end
+        end
+        least_populated_cult
+    end
+
+    def self.most_common_location
+        locations = Cult.all.map {|cults| cults.location}
+        locations.max_by{|location| locations.count(location)}
+    end
 end
